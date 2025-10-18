@@ -1,0 +1,9 @@
+*.out
+*.o
+*.zip
+__pycache__/
+vgcore*
+gentest*
+trees.h
+server
+client
