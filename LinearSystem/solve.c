@@ -49,7 +49,7 @@ int solve(double *a, double *x, double *a_rev, int n, double norm){
     x[k] = modx;
     modx = modx*modx+s;
     for (j = k+1; j < n; j++) {
-      x[j] = a[j*n + k];
+      x[j] = sgn*a[j*n + k];
     }
     modx = sqrt(modx);
     if (equiv_double(modx, 0, norm)) continue;
