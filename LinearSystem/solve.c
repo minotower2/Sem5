@@ -45,7 +45,7 @@ int solve(double *a, double *x, double *a_rev, int n, double norm){
     sgn = t >= 0 ? 1 : -1;
     mod = sqrt(t*t + s);
     if (equiv_double(mod, 0, norm)) return DEV_BY_ZERO;
-    modx = a[k*n + k] + sgn* mod;
+    modx = sgn*(a[k*n + k] - mod);
     x[k] = modx;
     modx = modx*modx+s;
     for (j = k+1; j < n; j++) {
