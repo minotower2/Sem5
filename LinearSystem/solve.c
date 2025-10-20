@@ -60,8 +60,8 @@ int solve(double *a, double *x, double *a_rev, int n, double norm){
     //for (j = k; j < n; j++) printf("%lf ", x[j]);
     //printf("\n");
 
-    productMatrix(x, a, a, k, n);
-    productVector(x, a_rev, a_rev, k, n);
+    productOptimized(x, a, k, n);
+    productHonest(x, a_rev, k, n);
 
     a[k*n+k] = mod;
     //printf("Matrix a:\n");
@@ -95,22 +95,22 @@ int solve(double *a, double *x, double *a_rev, int n, double norm){
   return SUCCESS;
 }
 
-void productVector(double *x, double *a, double *res, int start, int end) {
+void productHonest(double *x, double *a, int start, int end) {
   int i, j;
   double scalarProduct;
   for (i = 0; i < end; i++) {
     scalarProduct = 0;
     for (j = start; j < end; j++) scalarProduct += x[j] * a[j*end+i];
-    for (j = start; j < end; j++) res[j*end + i] = (a[j*end + i] - 2*scalarProduct*x[j]);
+    for (j = start; j < end; j++) a[j*end + i] = (a[j*end + i] - 2*scalarProduct*x[j]);
   }
 }
 
-void productMatrix(double *x, double *a, double *res, int start, int end) {
+void productOptimized(double *x, double *a, int start, int end) {
   int i, j;
   double scalarProduct;
   for (i = start+1; i < end; i++) {
     scalarProduct = 0;
     for (j = start; j < end; j++) scalarProduct += x[j] * a[j*end+i];
-    for (j = start; j < end; j++) res[j*end + i] = (a[j*end + i] - 2*scalarProduct*x[j]);
+    for (j = start; j < end; j++) a[j*end + i] = (a[j*end + i] - 2*scalarProduct*x[j]);
   }
 }
