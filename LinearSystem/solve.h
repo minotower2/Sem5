@@ -6,4 +6,6 @@ int sluL(double *a, int k, double *x, int n);
 int sluU(double *a, double *r, double *x, int n, double norm);
 void inv(double *a, double *a_rev, int n, double norm);
 void productHonest(double *x, double *a, int start, int end);
+void productHonest2(double *x, double *a, int start, int end);
 void productOptimized(double *x, double *y, int start, int end);
+double inverse_sqrt_simple(double x, int iterations);

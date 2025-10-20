@@ -2,8 +2,10 @@
 #include "returns.h"
 #include "matrix.h"
 #include <stdio.h>
+#include <time.h>
 #include <math.h>
 #define EPS 1e-16
+#define BLOCK_SIZE 64
 
 int equiv_double (double a, double b, double norm){
   return (d_abs(b-a) < EPS * norm) ? 1 : 0;
@@ -24,44 +26,39 @@ double norm_mat(double *a, int n) {
 }
 
 int solve(double *a, double *x, double *a_rev, int n, double norm){
-  int k, j, i, sgn;
+  int k, j, i;
   double s, t, mod, modx;
+  double time, timematrix = 0, timematrixpart;
 
-  for (i = 0; i < n; i++) {
-    for (j = 0; j < n; j++) {
-      if (i == j) a_rev[i*n+j] = 1;
-      else a_rev[i*n+j] = 0;
-    }
-  }
-
+  time = clock();
   for (k = 0; k < n-1; k++) {
     modx = 0;
     s = 0;
     for (j = k+1; j < n; j++) {
-      t = a[j*n + k];
+      t = a[k*n + j];
       s += t*t;
     }
     t = a[k*n + k];
-    sgn = t >= 0 ? 1 : -1;
     mod = sqrt(t*t + s);
     if (equiv_double(mod, 0, norm)) return DEV_BY_ZERO;
-    modx = sgn*(a[k*n + k] - mod);
+    modx = (t - mod);
     x[k] = modx;
     modx = modx*modx+s;
-    for (j = k+1; j < n; j++) {
-      x[j] = sgn*a[j*n + k];
-    }
-    modx = sqrt(modx);
     if (equiv_double(modx, 0, norm)) continue;
-    for (j = k; j < n; j++) {
-      x[j] = x[j] / modx;
+    modx = 1. / sqrt(modx);
+    x[k] *= modx;
+    for (j = k+1; j < n; j++) {
+      x[j] = a[k*n+ j] * (modx);
     }
     //printf("Vector x:\n");
     //for (j = k; j < n; j++) printf("%lf ", x[j]);
     //printf("\n");
 
+    timematrixpart = clock();
     productOptimized(x, a, k, n);
     productHonest(x, a_rev, k, n);
+    timematrixpart = clock() - timematrixpart;
+    timematrix += timematrixpart;
 
     a[k*n+k] = mod;
     //printf("Matrix a:\n");
@@ -70,6 +67,13 @@ int solve(double *a, double *x, double *a_rev, int n, double norm){
     //print_matrix(a_rev, n, 5);
   }
 
+  time = clock() - time;
+  time = time/CLOCKS_PER_SEC;
+  timematrix /= CLOCKS_PER_SEC;
+  printf("Decomposition time: %lf\n", time-timematrix);
+  printf("Multiplication time: %lf\n", timematrix);
+
+  time = clock();
   for (i = n-1; i >= 0; i--) {
     s = a[i*n + i];
     if (equiv_double(s, 0, norm)) return DEV_BY_ZERO;
@@ -78,7 +82,7 @@ int solve(double *a, double *x, double *a_rev, int n, double norm){
       a_rev[i*n + j] /= s;
     }
     for (j = i-1; j >= 0; j--) {
-      s = a[j*n + i];
+      s = a[i*n + j];
       if (!equiv_double(s, 0, norm)) {
         for (k = 0; k < n; k++) {
           //a[j*n + k] -= s * a[i*n + k];
@@ -91,6 +95,9 @@ int solve(double *a, double *x, double *a_rev, int n, double norm){
     //printf("Matrix a_rev:\n");
     //print_matrix(a_rev, n, 5);
   }
+  time = clock() - time;
+  time = time/CLOCKS_PER_SEC;
+  printf("Inversion time: %lf\n", time);
 
   return SUCCESS;
 }
@@ -110,7 +117,7 @@ void productOptimized(double *x, double *a, int start, int end) {
   double scalarProduct;
   for (i = start+1; i < end; i++) {
     scalarProduct = 0;
-    for (j = start; j < end; j++) scalarProduct += x[j] * a[j*end+i];
-    for (j = start; j < end; j++) a[j*end + i] = (a[j*end + i] - 2*scalarProduct*x[j]);
+    for (j = start; j < end; j++) scalarProduct += x[j] * a[i*end+j];
+    for (j = start; j < end; j++) a[i*end + j] = (a[i*end + j] - 2*scalarProduct*x[j]);
   }
 }

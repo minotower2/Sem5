@@ -4,12 +4,29 @@
 
 int read_matrix(double *a, int n, const char * name) {
   FILE *fp;
-  int l, lm = n * n;
+  int i, j;
   if (!(fp = fopen(name, "r"))) return ERROR_OPEN;
-  for (l = 0; l < lm; l++){
-    if (fscanf(fp, "%lf", a + l) != 1) {
-      fclose(fp);
-      return ERROR_READ;
+  for (i = 0; i < n; i++) {
+    for (j = 0; j < n; j++) {
+      if (fscanf(fp, "%lf", a + i*n+j) != 1) {
+        fclose(fp);
+        return ERROR_READ;
+      }
+    }
+  }
+  fclose(fp);
+  return SUCCESS;
+}
+int read_matrix_t(double *a, int n, const char * name) {
+  FILE *fp;
+  int i, j;
+  if (!(fp = fopen(name, "r"))) return ERROR_OPEN;
+  for (i = 0; i < n; i++) {
+    for (j = 0; j < n; j++) {
+      if (fscanf(fp, "%lf", a + j*n+i) != 1) {
+        fclose(fp);
+        return ERROR_READ;
+      }
     }
   }
   fclose(fp);

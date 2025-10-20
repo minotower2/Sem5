@@ -35,8 +35,14 @@ int main(int argc, char ** argv) {
   a_rev = (double*)malloc(n*n*sizeof(double));
   if (!a_rev) {printf("Not enough memory!\n"); free(a); free(x); return 2;}
 
+  for (int i = 0; i < n; i++) {
+    for (int j = 0; j < n; j++) {
+      if (i == j) a_rev[i*n+j] = 1;
+      else a_rev[i*n+j] = 0;
+    }
+  }
 
-  if (name) res = read_matrix(a, n, name);
+  if (name) res = read_matrix_t(a, n, name);
   else init_matrix(a, n, k);
   if (res!= SUCCESS) {
     switch (res) {
