@@ -59,6 +59,7 @@ int solve(double *a, double *x, double *a_rev, int n, double norm){
     timematrix += timematrixpart;
 
     a[k*n+k] = mod;
+
     //printf("Matrix a:\n");
     //print_matrix(a, n, 5);
     //printf("Matrix a_rev:\n");
@@ -66,10 +67,18 @@ int solve(double *a, double *x, double *a_rev, int n, double norm){
   }
 
   time = clock() - time;
-  time = time/CLOCKS_PER_SEC;
+  time /= CLOCKS_PER_SEC;
   timematrix /= CLOCKS_PER_SEC;
   printf("Decomposition time: %lf\n", time-timematrix);
   printf("Multiplication time: %lf\n", timematrix);
+
+  for (i = 0; i < n; i++) {
+    for (j = 0; j < i; j++) {
+      t = a_rev[i*n+j];
+      a_rev[i*n+j] = a_rev[j*n+i];
+      a_rev[j*n+i] = t;
+    }
+  }
 
   time = clock();
   for (i = n-1; i >= 0; i--) {
@@ -106,9 +115,9 @@ void productHonest(double *x, double *a, int k, int n) {
   double scalarProduct;
   for (i = 0; i < n; i++) {
     scalarProduct = 0;
-    for (j = k; j < n; j++) scalarProduct += x[j] * a[j*n + i];
+    for (j = k; j < n; j++) scalarProduct += x[j] * a[i*n + j];
     scalarProduct *= 2;
-    for (j = k; j < n; j++) a[j*n + i] -= scalarProduct * x[j];
+    for (j = k; j < n; j++) a[i*n + j] -= scalarProduct * x[j];
   }
 }
 

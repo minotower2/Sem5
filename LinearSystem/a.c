@@ -71,7 +71,7 @@ int main(int argc, char ** argv) {
   if (name) res = read_matrix(a, n, name);
   else init_matrix(a, n, k);
 
-  if (result == 0) { 
+  if (result == SUCCESS) { 
     printf("Resulting matrix: \n");
     print_matrix(a_rev, n, p);
     t2 = clock();

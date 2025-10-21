@@ -4,12 +4,12 @@
 
 
 double r1(double *a, double *a_rev, int n) {
-  if (n <= 1100) return norm(a, a_rev, n);
+  if (n <= 11000) return norm(a, a_rev, n);
   else return 0;
 }
 
 double r2(double *a, double *a_rev, int n){
-  if (n <= 1100) return norm(a_rev, a, n);
+  if (n <= 11000) return norm(a_rev, a, n);
   else return 0;
 }
 
