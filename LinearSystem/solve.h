@@ -1,5 +1,4 @@
 int equiv_double (double a, double b, double norm);
-double d_abs(double x);
 double norm_mat(double *a, int n);
 int solve(double *a, double *x, double *a_rev, int n, double norm);
 int sluL(double *a, int k, double *x, int n);

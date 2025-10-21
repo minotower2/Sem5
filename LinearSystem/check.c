@@ -1,30 +1,31 @@
 #include "check.h"
+#include <math.h>
+#include <stdio.h>
 
-double dabs(double x) {return x > 0 ? x : -x;}
 
 double r1(double *a, double *a_rev, int n) {
-  if (n <= 11000) return norm(a, a_rev, n, n);
+  if (n <= 1100) return norm(a, a_rev, n);
   else return 0;
 }
 
 double r2(double *a, double *a_rev, int n){
-  if (n <= 11000) return norm(a_rev, a, n, n);
+  if (n <= 1100) return norm(a_rev, a, n);
   else return 0;
 }
 
-double norm(double *a, double *b, int n, int m) { 
+double norm(double *a, double *b, int n) {
   double sum = 0, res = 0, temp;
   int i, j, k;
   for (j = 0; j < n; j++) {
+    sum = 0;
     for (i = 0; i < n; i++) {
       temp = 0;
-      for (k = 0; k < m; k++) {
-        temp += a[i*m + k] * b[k*n + j];
+      for (k = 0; k < n; k++) {
+        temp += a[i*n + k] * b[k*n + j];
       }
-      sum += (i == j ? dabs(temp-1) : dabs(temp));
+      sum += (i == j ? fabs(temp-1) : fabs(temp));
     }
     if (sum > res) res = sum;
-    sum = 0;
   }
   return res;
 }

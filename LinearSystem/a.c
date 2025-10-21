@@ -63,7 +63,7 @@ int main(int argc, char ** argv) {
   }
   norm = norm_mat(a,n);
   printf("Initial matrix: \n");
-  print_matrix(a, n,  p);
+  print_matrix_t(a, n,  p);
   t1 = clock();
   result = solve(a, x, a_rev, n, norm);
   t1 = (clock() - t1) / CLOCKS_PER_SEC;

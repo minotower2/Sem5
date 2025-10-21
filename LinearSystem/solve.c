@@ -4,20 +4,18 @@
 #include <stdio.h>
 #include <time.h>
 #include <math.h>
-#define EPS 1e-16
-#define BLOCK_SIZE 64
+#define EPS 1e-15
 
 int equiv_double (double a, double b, double norm){
-  return (d_abs(b-a) < EPS * norm) ? 1 : 0;
+  return (fabs(b-a) < EPS * norm) ? 1 : 0;
 }
-double d_abs(double x) {return (x >= 0) ? x : -x;}
 
 double norm_mat(double *a, int n) {
   double temp = 0, res = 0;
   int i, j;
   for (j = 0; j < n; j++) {
     for (i = 0; i < n; i++) {
-      temp += d_abs(a[i*n + j]);
+      temp += fabs(a[i*n + j]);
     }
     if (temp > res) res = temp;
     temp = 0;
@@ -77,9 +75,10 @@ int solve(double *a, double *x, double *a_rev, int n, double norm){
   for (i = n-1; i >= 0; i--) {
     s = a[i*n + i];
     if (equiv_double(s, 0, norm)) return DEV_BY_ZERO;
+    s = 1. / s;
     for (j = 0; j < n; j++) {
       //a[i*n + j] /= s;
-      a_rev[i*n + j] /= s;
+      a_rev[i*n + j] *= s;
     }
     for (j = i-1; j >= 0; j--) {
       s = a[i*n + j];
@@ -102,13 +101,14 @@ int solve(double *a, double *x, double *a_rev, int n, double norm){
   return SUCCESS;
 }
 
-void productHonest(double *x, double *a, int start, int end) {
+void productHonest(double *x, double *a, int k, int n) {
   int i, j;
   double scalarProduct;
-  for (i = 0; i < end; i++) {
+  for (i = 0; i < n; i++) {
     scalarProduct = 0;
-    for (j = start; j < end; j++) scalarProduct += x[j] * a[j*end+i];
-    for (j = start; j < end; j++) a[j*end + i] = (a[j*end + i] - 2*scalarProduct*x[j]);
+    for (j = k; j < n; j++) scalarProduct += x[j] * a[j*n + i];
+    scalarProduct *= 2;
+    for (j = k; j < n; j++) a[j*n + i] -= scalarProduct * x[j];
   }
 }
 
@@ -118,6 +118,7 @@ void productOptimized(double *x, double *a, int start, int end) {
   for (i = start+1; i < end; i++) {
     scalarProduct = 0;
     for (j = start; j < end; j++) scalarProduct += x[j] * a[i*end+j];
-    for (j = start; j < end; j++) a[i*end + j] = (a[i*end + j] - 2*scalarProduct*x[j]);
+    scalarProduct *= 2;
+    for (j = start; j < end; j++) a[i*end + j] -= scalarProduct*x[j];
   }
 }

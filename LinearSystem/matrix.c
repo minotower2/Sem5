@@ -44,6 +44,16 @@ void print_matrix(double *a, int n, int p){
   }
 }
 
+void print_matrix_t(double *a, int n, int p){
+  int np = (n > p ? p : n);
+  int i, j;
+  for (i = 0; i < np; i++) {
+    for (j = 0; j < np; j++) {
+      printf(" %10.3e", a[j*n + i]);
+    }
+    printf("\n");
+  }
+}
 void init_matrix(double *a, int n, int k) {
   int i, j;
   for (i = 0; i < n; i++) {
