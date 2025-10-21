@@ -26,7 +26,7 @@ double norm_mat(double *a, int n) {
 int solve(double *a, double *x, double *a_rev, int n, double norm){
   int k, j, i;
   double s, t, mod, modx;
-  double time, timematrix = 0, timematrixpart;
+  double time;
 
   time = clock();
   for (k = 0; k < n-1; k++) {
@@ -52,11 +52,8 @@ int solve(double *a, double *x, double *a_rev, int n, double norm){
     //for (j = k; j < n; j++) printf("%lf ", x[j]);
     //printf("\n");
 
-    timematrixpart = clock();
     productOptimized(x, a, k, n);
     productHonest(x, a_rev, k, n);
-    timematrixpart = clock() - timematrixpart;
-    timematrix += timematrixpart;
 
     a[k*n+k] = mod;
 
@@ -68,9 +65,7 @@ int solve(double *a, double *x, double *a_rev, int n, double norm){
 
   time = clock() - time;
   time /= CLOCKS_PER_SEC;
-  timematrix /= CLOCKS_PER_SEC;
-  printf("Decomposition time: %lf\n", time-timematrix);
-  printf("Multiplication time: %lf\n", timematrix);
+  printf("Decomposition time: %lf\n", time);
 
   for (i = 0; i < n; i++) {
     for (j = 0; j < i; j++) {

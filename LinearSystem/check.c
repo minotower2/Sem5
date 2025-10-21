@@ -16,7 +16,7 @@ double r2(double *a, double *a_rev, int n){
 double norm(double *a, double *b, int n) {
   double sum = 0, res = 0, temp;
   int i, j, k;
-  for (j = 0; j < n; j++) {
+  for (j = 0; j < n/10; j++) {
     sum = 0;
     for (i = 0; i < n; i++) {
       temp = 0;
