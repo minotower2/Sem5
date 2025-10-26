@@ -26,13 +26,14 @@ int solve(double *a, double *x, double *a_rev, int n, double norm){
   double s, t, mod, modx;
 
   for (k = 0; k < n-1; k++) {
+    prod1 = k*n;
     modx = 0;
     s = 0;
     for (j = k+1; j < n; j++) {
-      t = a[k*n + j];
+      t = a[prod1 + j];
       s += t*t;
     }
-    t = a[k*n + k];
+    t = a[prod1 + k];
     mod = sqrt(t*t + s);
     if (equiv_double(mod, 0, norm)) return DEV_BY_ZERO;
     modx = (t - mod);
@@ -42,7 +43,7 @@ int solve(double *a, double *x, double *a_rev, int n, double norm){
     modx = 1. / sqrt(modx);
     x[k] *= modx;
     for (j = k+1; j < n; j++) {
-      x[j] = a[k*n+ j] * (modx);
+      x[j] = a[prod1 + j] * (modx);
     }
     //printf("Vector x:\n");
     //for (j = k; j < n; j++) printf("%lf ", x[j]);
@@ -51,7 +52,7 @@ int solve(double *a, double *x, double *a_rev, int n, double norm){
     productOptimized(x, a, k, n);
     productHonest(x, a_rev, k, n);
 
-    a[k*n+k] = mod;
+    a[prod1 + k] = mod;
 
     //printf("Matrix a:\n");
     //print_matrix(a, n, 5);
@@ -60,16 +61,18 @@ int solve(double *a, double *x, double *a_rev, int n, double norm){
   }
 
   for (i = 0; i < n; i++) {
+    prod1 = i*n;
     for (j = 0; j < i; j++) {
-      t = a_rev[i*n+j];
-      a_rev[i*n+j] = a_rev[j*n+i];
-      a_rev[j*n+i] = t;
+      prod2 = j*n;
+      t = a_rev[prod1 + j];
+      a_rev[prod1 + j] = a_rev[prod2 + i];
+      a_rev[prod2 + i] = t;
     }
   }
 
  for (i = n-1; i >= 0; i--) {
     prod1 = i*n;
-    s = a[i*n + i];
+    s = a[prod1 + i];
     if (equiv_double(s, 0, norm)) return DEV_BY_ZERO;
     s = 1. / s;
     for (j = 0; j < n; j++) {
@@ -106,14 +109,14 @@ void productHonest(double *x, double *a, int k, int n) {
   }
 }
 
-void productOptimized(double *x, double *a, int start, int end) {
+void productOptimized(double *x, double *a, int k, int n) {
   int i, j, prod;
   double scalarProduct;
-  for (i = start+1; i < end; i++) {
-    prod = i*end;
+  for (i = k+1; i < n; i++) {
+    prod = i*n;
     scalarProduct = 0;
-    for (j = start; j < end; j++) scalarProduct += x[j] * a[prod+j];
+    for (j = k; j < n; j++) scalarProduct += x[j] * a[prod + j];
     scalarProduct *= 2;
-    for (j = start; j < end; j++) a[prod + j] -= scalarProduct*x[j];
+    for (j = k; j < n; j++) a[prod + j] -= scalarProduct * x[j];
   }
 }
