@@ -59,15 +59,17 @@ int main(int argc, char ** argv) {
 
   norm = norm_mat(a, n);
 
-  t2 = clock();
+  t1 = clock();
   its = solve(a, n, x, eps, norm);
-  t2 = (clock() - t2)/CLOCKS_PER_SEC;
+  t1 = (clock() - t1)/CLOCKS_PER_SEC;
 
   if (name) res = read_matrix(a, n, n, name);
   else init_matrix(a, n, k);
 
+  t2 = clock();
   res1 = r1(a, x, n, norm);
   res2 = r2(a, x, n, norm);
+  t2 = (clock() - t2)/CLOCKS_PER_SEC;
   
   if (result == 0) { 
     printf("Eigenvalues: \n");

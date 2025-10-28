@@ -1,6 +1,7 @@
 #include "solve.h"
 #include <math.h>
 #include <stdio.h>
+#include "matrix.h"
 
 int equiv_double (double a, double b, double eps, double norm){
   return (fabs(b-a) < eps* norm) ? 1 : 0;
@@ -21,7 +22,7 @@ double norm_mat(double *a, int n) {
 
 int solve(double *a, int n, double *x, double eps, double norm) {
   int its = 0, i, j, sign, prod;
-  double sigm = sigma(a, n), xs, ys, c, s, temp, aij;
+  double sigm = sigma(a, n), xs, ys, c, s, temp, aij, dprod;
   while (sigm > eps) {
     for (i = 0; i < n; i++) {
       prod = i*n;
@@ -39,7 +40,8 @@ int solve(double *a, int n, double *x, double eps, double norm) {
           temp = (sqrt(xs*xs + ys*ys));
           c = sqrt(0.5*(1 + (fabs(ys))/temp));
           //sign = (xs*ys > 0 ? 1 : -1);
-          sign = (xs*ys > 0) - (xs*ys <= 0);
+          dprod = xs*ys;
+          sign = (dprod > 0) - (dprod <= 0);
           s = (sign * fabs(xs)) / (2*c * temp);
         }
         productMatrix(a, n, i, j, s, c);
@@ -74,11 +76,14 @@ void productMatrix(double *a, int n, int i, int j, double s, double c) {
 
 void productMatrixHorizontal(double *a, int n, int i, int j, double s, double c) {
   double temp1, temp2;
+  int t1, t2;
   for (int k = 0; k < n; k++) {
-    temp1 = a[k*n+i];
-    temp2 = a[k*n+j];
-    a[k*n+i] = c*temp1 - s*temp2;
-    a[k*n+j] = s*temp1 + c*temp2;
+    t1 = k*n+i;
+    t2 = k*n+j;
+    temp1 = a[t1];
+    temp2 = a[t2];
+    a[t1] = c*temp1 - s*temp2;
+    a[t2] = s*temp1 + c*temp2;
   }
 }
 double sigma(double *a, int n) {
