@@ -29,6 +29,7 @@ int solve(double *a, int n, double *x, double eps, double norm) {
       for (j = i+1; j < n; j++) {
         if(sigm < eps) break;
         aij = a[prod+j];
+        if (equiv_double(aij, 0, eps, norm)) goto skip;
         its++;
         xs = -2 * aij;
         ys = a[prod+i] - a[j*n+j];
@@ -46,6 +47,7 @@ int solve(double *a, int n, double *x, double eps, double norm) {
         }
         productMatrix(a, n, i, j, s, c);
         productMatrixHorizontal(a, n, i, j, s, c);
+        skip:
         sigm -= 2* aij*aij;
       }
     }
