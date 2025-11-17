@@ -8,3 +8,4 @@ void productHonest(double *x, double *a, int start, int end);
 void productHonest2(double *x, double *a, int start, int end);
 void productOptimized(double *x, double *y, int start, int end);
 double inverse_sqrt_simple(double x, int iterations);
+int gauss(double *a, int n, double *a_rev, double norm);

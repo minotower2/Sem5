@@ -10,3 +10,4 @@ void productOptimized(double *x, double *y, int start, int end, int, int);
 void * productHonestThreaded(void *pa);
 void * productOptimizedThreaded(void *pa);
 double inverse_sqrt_simple(double x, int iterations);
+int gauss(double *a, int n, double *a_rev, double norm);

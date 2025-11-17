@@ -70,30 +70,11 @@ int solve(double *a, double *x, double *a_rev, int n, double norm){
     }
   }
 
- for (i = n-1; i >= 0; i--) {
-    prod1 = i*n;
-    s = a[prod1 + i];
-    if (equiv_double(s, 0, norm)) return DEV_BY_ZERO;
-    s = 1. / s;
-    for (j = 0; j < n; j++) {
-      //a[i*n + j] /= s;
-      a_rev[prod1 + j] *= s;
-    }
-    for (j = i-1; j >= 0; j--) {
-      prod2 = j*n;
-      s = a[prod1 + j];
-      if (!equiv_double(s, 0, norm)) {
-        for (k = 0; k < n; k++) {
-          //a[j*n + k] -= s * a[i*n + k];
-          a_rev[prod2 + k] -= s * a_rev[prod1 + k];
-        }
-      }
-    }
+  if (gauss(a, n, a_rev, norm)) return DEV_BY_ZERO;
     //printf("Matrix a:\n");
     //print_matrix(a, n, 5);
     //printf("Matrix a_rev:\n");
     //print_matrix(a_rev, n, 5);
-  }
   return SUCCESS;
 }
 
@@ -120,3 +101,32 @@ void productOptimized(double *x, double *a, int k, int n) {
     for (j = k; j < n; j++) a[prod + j] -= scalarProduct * x[j];
   }
 }
+
+
+int gauss(double *a, int n, double *a_rev, double norm) {
+  int i, prod1, j, prod2, k;
+  double s;
+  
+  for (i = n-1; i >= 0; i--) {
+    prod1 = i*n;
+    s = a[prod1 + i];
+    if (equiv_double(s, 0, norm)) return DEV_BY_ZERO;
+    s = 1. / s;
+    for (j = 0; j < n; j++) {
+      //a[i*n + j] /= s;
+      a_rev[prod1 + j] *= s;
+    }
+    for (j = i-1; j >= 0; j--) {
+      prod2 = j*n;
+      s = a[prod1 + j];
+      if (!equiv_double(s, 0, norm)) {
+        for (k = 0; k < n; k++) {
+          //a[j*n + k] -= s * a[i*n + k];
+          a_rev[prod2 + k] -= s * a_rev[prod1 + k];
+        }
+      }
+    }
+  }
+  return 0;
+}
+

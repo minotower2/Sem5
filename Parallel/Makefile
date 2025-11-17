@@ -1,6 +1,6 @@
 CFLAGS = -O3 -pthread -mfpmath=sse -fstack-protector-all -W -Wall -Wextra -Wunused -Wcast-align -Werror -pedantic -pedantic-errors -Wfloat-equal -Wpointer-arith -Wformat-security -Wmissing-format-attribute -Wformat=1 -Wwrite-strings -Wcast-align -Wno-long-long -std=gnu99 -Wstrict-prototypes -Wmissing-prototypes -Wmissing-declarations -Wold-style-definition -Wdeclaration-after-statement -Wbad-function-cast -Wnested-externs
-FUNCTIONS_O = solve.o matrix.o check.o synchronize.o
-HEADERS = solve.h returns.h matrix.h check.h synchronize.h args_struct.h
+FUNCTIONS_O = solve.o matrix.o check.o synchronize.o get_time.o
+HEADERS = solve.h returns.h matrix.h check.h synchronize.h args_struct.h get_time.h
 
 %.o: %.c $(HEADERS)
 	gcc -c $(CFLAGS) $<

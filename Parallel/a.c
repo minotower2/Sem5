@@ -8,7 +8,6 @@
 #include "matrix.h"
 #include "args_struct.h"
 
-
 int main(int argc, char ** argv) {
   double *a, *x, *a_rev;
   double t1, t2, res1 = 0, res2 = 0, norm;  
@@ -16,6 +15,7 @@ int main(int argc, char ** argv) {
   char *name = 0;
   pthread_t* threads;
   ARGS * args;
+  struct timespec start, finish;
 
   if (!(
     (argc == 5 || argc == 6) && 
@@ -77,9 +77,15 @@ int main(int argc, char ** argv) {
   norm = norm_mat(a,n);
   printf("Initial matrix: \n");
   print_matrix_t(a, n,  p);
-  t1 = clock();
+  
+  //t1 = clock();
+  clock_gettime(CLOCK_MONOTONIC, &start);
   result = solve(a, x, a_rev, n, norm, threads, total_threads, args);
-  t1 = (clock() - t1) / CLOCKS_PER_SEC;
+  //t1 = (clock() - t1) / CLOCKS_PER_SEC;
+  clock_gettime(CLOCK_MONOTONIC, &finish);
+  t1 = (finish.tv_sec - start.tv_sec);
+  t1 += (finish.tv_nsec - start.tv_nsec) / 1000000000.0;
+
 
   if (name) res = read_matrix(a, n, name);
   else init_matrix(a, n, k);
